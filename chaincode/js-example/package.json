@@ -1,13 +1,13 @@
 {
-  "name": "example1",
+  "name": "js-example",
   "version": "1.0.0",
-  "description": "example1 chaincode implemented in node.js",
+  "description": "js-example chaincode implemented in node.js",
   "engines": {
     "node": ">=8.4.0",
     "npm": ">=5.3.0"
   },
   "scripts": {
-    "start": "node example1.js"
+    "start": "node js-example-1.js"
   },
   "engine-strict": true,
   "license": "Apache-2.0",

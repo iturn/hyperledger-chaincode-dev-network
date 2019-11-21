@@ -29,6 +29,8 @@ Get into bash shell in the chaincode container
 docker exec -it chaincode bash
 ```
 
+### Golang
+
 Compile your chaincode
 
 ```bash
@@ -39,10 +41,25 @@ go build -o go-example-1
 Run the chaincode:
 
 ```bash
-CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./go-example-1
+CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:v1 ./go-example-1
 ```
 
-You will see some 'Ready' text on last line
+### NodeJs
+
+Install dependencies via npm
+
+```bash
+cd js-example
+npm install
+```
+
+Run the chaincode:
+
+```bash
+CORE_CHAINCODE_ID_NAME=mycc:v1 node js-example-1.js --peer.address peer:7052
+```
+
+In both examples you will see some 'Ready' text on last line
 
 The chaincode is started with peer and chaincode logs indicating successful registration with the peer.
 Note that at this stage the chaincode is not associated with any channel. This is done in subsequent steps
@@ -61,12 +78,21 @@ Get into bash shell in the chaincode container
 docker exec -it cli bash
 ```
 
-Install and initiate chain code
+### Install and instantiate Golang code
 
 ```bash
-peer chaincode install -p chaincodedev/chaincode/go-example -n mycc -v 0
-peer chaincode instantiate -n mycc -v 0 -c '{"Args":["init","a","100","b","200"]}' -C myc
+peer chaincode install -p chaincodedev/chaincode/go-example -n mycc -v v1
+peer chaincode instantiate -n mycc -v v1 -c '{"Args":["init","a","100","b","200"]}' -C myc
 ```
+
+### Install and instantiate NodeJs code
+
+```bash
+peer chaincode install --lang node --name mycc --version v1 --path /opt/gopath/src/chaincodedev/chaincode/js-example
+peer chaincode instantiate --lang node -n mycc -v v1 -c '{"Args":["init","a","100","b","200"]}' -C myc
+```
+
+### Run functions
 
 Lets run some functions on the chaincode/contract now.
 Issue an invoke to move `10` from `a` to `b`.
