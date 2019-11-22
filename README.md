@@ -102,7 +102,6 @@ Lets run some functions on the chaincode/contract now.
 
 ```bash
 peer chaincode invoke -n mycc -c '{"Args":["invoke","a","b","10"]}' -C myc
-peer chaincode invoke -n mycc -c '{"Args":["registerParameter","ref123"]}' -C myc
 peer chaincode invoke -n mycc -c '{"Args":["registerMeasurement","ref123", "100", "timestamp"]}' -C myc
 ```
 
@@ -115,9 +114,22 @@ peer chaincode query -n mycc -c '{"Args":["queryMeasurementsByReference","ref123
 
 ### Retry or reset
 
-If you want to try a contract again after code changes or reset the chain
+If you want to try a contract again after code changes or reset the chain, maybe a bump in version number is needed
 
 ```bash
 docker-compose down
 docker-compose up
+```
+
+# Package smart contract to cds file for upload in IBM blockchain platform
+
+Keep and eye on the contract version -v param in the commands.
+Get into bash shell in the chaincode container
+
+```bash
+docker exec -it cli bash
+```
+
+```bash
+peer chaincode package -S --lang node -p /opt/gopath/src/chaincodedev/chaincode/measurements-registry -v v1 -n measurements-registry measurements-registry.cds
 ```

@@ -30,31 +30,6 @@ var Chaincode = class {
     }
   }
 
-  async registerParameter(stub, args, thisClass) {
-    if (args.length != 1) {
-      throw new Error("Incorrect number of arguments, expecting 1");
-    }
-
-    const parameterReference = args[0].toString();
-
-    console.info(
-      "measurementRegistry::registerParameter::try with parameterReference " +
-        parameterReference
-    );
-
-    await stub.putState(
-      parameterReference,
-      Buffer.from(
-        JSON.stringify({
-          reference: parameterReference,
-          docType: "parameter"
-        })
-      )
-    );
-
-    return Buffer.from("success");
-  }
-
   async registerMeasurement(stub, args, thisClass) {
     if (args.length != 3) {
       throw new Error("Incorrect number of arguments, expecting 3");
@@ -68,19 +43,16 @@ var Chaincode = class {
       args
     );
 
-    await stub.putState(
-      parameterReference,
-      Buffer.from(
-        JSON.stringify({
-          reference: parameterReference,
-          docType: "measurement",
-          value: args[2],
-          timestamp: args[3]
-        })
-      )
-    );
+    const measurement = JSON.stringify({
+      reference: parameterReference,
+      docType: "measurement",
+      value: args[1],
+      timestamp: parseInt(args[2])
+    });
 
-    return Buffer.from("success");
+    await stub.putState(parameterReference, Buffer.from(measurement));
+
+    return Buffer.from(measurement);
   }
 
   async queryMeasurementsByReference(stub, args, thisClass) {
