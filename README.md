@@ -57,6 +57,7 @@ Run the chaincode:
 
 ```bash
 CORE_CHAINCODE_ID_NAME=mycc:v1 node js-example-1.js --peer.address peer:7052
+CORE_CHAINCODE_ID_NAME=mycc:v1 node measurements-registry.js --peer.address peer:7052
 ```
 
 In both examples you will see some 'Ready' text on last line
@@ -88,21 +89,35 @@ peer chaincode instantiate -n mycc -v v1 -c '{"Args":["init","a","100","b","200"
 ### Install and instantiate NodeJs code
 
 ```bash
-peer chaincode install --lang node --name mycc --version v1 --path /opt/gopath/src/chaincodedev/chaincode/js-example
+peer chaincode install --lang node --name mycc --path /opt/gopath/src/chaincodedev/chaincode/js-example --version v1
 peer chaincode instantiate --lang node -n mycc -v v1 -c '{"Args":["init","a","100","b","200"]}' -C myc
+
+peer chaincode install --lang node --name mycc --path /opt/gopath/src/chaincodedev/chaincode/measurements-registry --version v1
+peer chaincode instantiate --lang node -n mycc -v v1 -c '{"Args":["init"]}' -C myc
 ```
 
 ### Run functions
 
 Lets run some functions on the chaincode/contract now.
-Issue an invoke to move `10` from `a` to `b`.
 
 ```bash
 peer chaincode invoke -n mycc -c '{"Args":["invoke","a","b","10"]}' -C myc
+peer chaincode invoke -n mycc -c '{"Args":["registerParameter","ref123"]}' -C myc
+peer chaincode invoke -n mycc -c '{"Args":["registerMeasurement","ref123", "100", "timestamp"]}' -C myc
 ```
 
 Finally, query `a`. We should see a value of `90`.
 
 ```bash
 peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
+peer chaincode query -n mycc -c '{"Args":["queryMeasurementsByReference","ref123"]}' -C myc
+```
+
+### Retry or reset
+
+If you want to try a contract again after code changes or reset the chain
+
+```bash
+docker-compose down
+docker-compose up
 ```
